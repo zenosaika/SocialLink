@@ -5,6 +5,7 @@ import java.io.*;
 import java.net.*;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.awt.Font;
 
 public class ChatClient extends JFrame implements ActionListener, KeyListener {
 
@@ -17,11 +18,20 @@ public class ChatClient extends JFrame implements ActionListener, KeyListener {
   private JTextField usernameField;
   private JLabel usernameLabel;
   private String username = "Guest";
+  private Font customFont;
 
   public ChatClient() throws IOException {
     super("Social Link (Beta)");
 
-    UIManager.put("defaultFont", new Font("Arial", Font.PLAIN, 16));
+    ClassLoader classLoader = getClass().getClassLoader();
+    try {
+      customFont = Font.createFont(Font.TRUETYPE_FONT, classLoader.getResourceAsStream("assets/Kanit-Regular.ttf"));
+      customFont = customFont.deriveFont(16f);
+      // Use the customFont object to set fonts for your Swing components
+    } catch (FontFormatException | IOException e) {
+      // Handle exceptions if the font file is not found or invalid
+      e.printStackTrace();
+    }
 
     usernameLabel = new JLabel("Username:");
     usernameField = new JTextField("Guest", 15);
@@ -41,17 +51,18 @@ public class ChatClient extends JFrame implements ActionListener, KeyListener {
     chatHistory = new JTextArea();
     chatHistory.setEditable(false);
     chatHistory.setBackground(Color.WHITE);
-    chatHistory.setFont(new Font("Arial", Font.PLAIN, 14));
     JScrollPane chatScrollPanel = new JScrollPane(chatHistory);
     chatScrollPanel.setPreferredSize(new Dimension(400, 200));
     chatHistory.setBackground(new Color(1, 20, 38));
     chatHistory.setForeground(Color.WHITE);
     chatHistory.setMargin(new Insets(10, 10, 15, 10));
+    chatHistory.setFont(customFont);
 
     // Create message input field
     messageField = new JTextField();
     messageField.addKeyListener(this);
     messageField.setColumns(25);
+    messageField.setFont(customFont);
 
     // Create send button
     sendButton = new JButton("Send");
